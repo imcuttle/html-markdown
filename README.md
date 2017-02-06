@@ -27,6 +27,7 @@ var html2md = require('html-markdown');
 
 var md1 = html2md.html2mdFromString("<h1>Hello!</h1>");
 // https or http
-var md2 = html2md.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme");
-var md3 = html2md.html2mdFromPath("path/to/html/file", "#markdown");
+html2md.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme").then(console.log);
+
+html2md.html2mdFromPath("path/to/html/file", "#markdown").then(console.log);
 ```

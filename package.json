@@ -1,7 +1,7 @@
 {
   "name": "html-markdown",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Convert from Html to Markdown By nodeJs.",
   "main": "lib.js",
   "dependencies": {
     "cheerio": "^0.22.0",
@@ -15,6 +15,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "moyu",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moyuyc/html-markdown.git"
+  },
+  "keywords": [
+    "html",
+    "markdown"
+  ],
+  "bugs": {
+    "url": "https://github.com/moyuyc/html-markdown/issues"
+  },
+  "homepage": "https://github.com/moyuyc/html-markdown#readme"
 }
