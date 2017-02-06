@@ -69,7 +69,7 @@ function elem2Markdown(dom, parentTagName, index, inner, level) {
     } else if ('code' === tagName) {
         mapStr = "`" + childrenRender() + "`"
     } else if ('pre' === tagName) {
-        mapStr = "\n```\n"+ `${dom.text()}\n` +"```\n"
+        mapStr = "\n```\n"+ `${dom.text().replace(/^\r?\n/, '').replace(/\r?\n$/, '')}\n` +"```\n"
     } else if ('a' === tagName) {
         mapStr = `[${childrenRender()}](${dom.attr('href')})`;
     } else if ('div' === tagName) {

@@ -10,7 +10,6 @@
 
 ```
  $ npm i -g moka-cli
-
 ```
 
 
@@ -31,7 +30,6 @@ $ moka n abc # 新建一个article 
  
 $ moka d  # 根据 moka.config.json deploy 发布 
 $ moka b  # 根据 moka.config.json bak 发布 
-
 ```
 
 
@@ -64,7 +62,6 @@ moka-blog/
 └── themes/          # moka g 将配置中选中对应的主题 `themeBuild`目录 拷贝到static
      └── moka/       # 主题文件夹，其中包含theme.config.json, 根据主题要求自行配置
  
-
 ```
 
 

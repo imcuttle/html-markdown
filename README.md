@@ -10,6 +10,7 @@ html2md -h
 html2md https://www.npmjs.com/package/html-markdown -s "#readme" > html-markdown-readme.md
 # with image
 html2md https://www.npmjs.com/package/song-robot -s "#readme" > song-robot-readme.md
+html2md https://www.npmjs.com/package/moka-cli -s "#readme" > moka-cli-readme.md
 
 html2md path/to/html/file -s "#markdown"
 
