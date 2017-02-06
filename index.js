@@ -5,7 +5,7 @@
  */
 
 var argv = require('minimist')(process.argv.slice(2));
-var isHtml = require('cheerio/lib/utils').isHtml;
+
 var html2mdFromString = require('./lib').html2mdFromString
 var html2mdFromURL = require('./lib').html2mdFromURL
 var html2mdFromPath = require('./lib').html2mdFromPath

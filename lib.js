@@ -4,6 +4,7 @@
 
 var cheerio = require('cheerio');
 var fs = require('fs');
+var isHtml = require('cheerio/lib/utils').isHtml;
 
 var __load__ = cheerio.load;
 cheerio.load = function () {
