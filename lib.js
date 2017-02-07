@@ -158,18 +158,22 @@ module.exports = {
             return Promise.reject(basename + " is a directory.");
         }
 
-        var string = fs.readFileSync(path).toString();
-        if (!isHtml(string)) {
-            return Promise.reject(basename + " is not a html file.");
-        }
-        return Promise.resolve(cheerio.load(string))
-            .then(function ($) {
-                return selectorMiddleware($, selector)
-            }).then(function ($) {
-                return convertMiddleware($, log)
-            })
+        fs.readFile(path, function (err, data) {
+            if (err) {
+                return Promise.reject(err.message);
+            }
+            var string = data.toString();
+            if (!isHtml(string)) {
+                return Promise.reject(basename + " is not a html file.");
+            }
+            return Promise.resolve(cheerio.load(string))
+                .then(function ($) {
+                    return selectorMiddleware($, selector)
+                }).then(function ($) {
+                    return convertMiddleware($, log)
+                })
+        })
     }
-
 }
 
 

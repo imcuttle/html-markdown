@@ -26,7 +26,7 @@ html2md path/to/html/file -s "#markdown"
 html2md --eval "<h1>Hello!</h1>"
 ```
 
-- Script
+- Package
 
 ```
 npm i --save html-markdown
