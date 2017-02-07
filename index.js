@@ -54,8 +54,3 @@ if (options.eval) {
         })
     })
 }
-
-
-
-
-

@@ -1,7 +1,7 @@
 /**
  * Created by moyu on 2017/2/7.
  */
-
+var isBrowser = (() => !(typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node !== 'undefined'))();
 var cheerio = require('cheerio');
 var isHtml = require('./utils').isHtml;
 
@@ -11,9 +11,8 @@ cheerio.load = function () {
     var $ = __load__.apply(this, Array.from(arguments));
     return $('cheerio#cheerio');
 }
-console.part = function (s) {
-    process.stdout.write(s);
-}
+console.part = isBrowser ? function() {} : function (s) {process.stdout.write(s)};
+
 var __text__ = cheerio.prototype.text
 cheerio.prototype.text = function () {
     var he = require('he'); // he for decoding html entities
@@ -182,4 +181,4 @@ module.exports = {
 
 // module.exports.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme").then(console.log)
 // module.exports.html2mdFromPath("./test.html", "#readme").then(console.log)
-// module.exports.html2mdFromString("<h1>是多少</h1>", true)
+// module.exports.html2mdFromString("<h1>是多少</h1><!--more-->", true)
