@@ -6,11 +6,6 @@
 
 var argv = require('minimist')(process.argv.slice(2));
 
-var html2mdFromString = require('./lib').html2mdFromString
-var html2mdFromURL = require('./lib').html2mdFromURL
-var html2mdFromPath = require('./lib').html2mdFromPath
-
-
 var default_opts = {
     selector: argv.s || argv.selector,
     eval: argv.e || argv.eval,
@@ -39,7 +34,12 @@ if (options.version) {
 
 if (options._.length === 0 && !options.eval) {
     console.error("Usage: html2md [-e html] [-s dom selector of url] url/path");
+    return;
 }
+
+var html2mdFromString = require('./lib').html2mdFromString
+var html2mdFromURL = require('./lib').html2mdFromURL
+var html2mdFromPath = require('./lib').html2mdFromPath
 
 if (options.eval) {
     html2mdFromString(options.eval, true);
