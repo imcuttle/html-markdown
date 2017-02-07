@@ -86,6 +86,10 @@ function elem2Markdown(dom, parentTagName, index, inner, level) {
         mapStr = `------`
     } else if ('del' === tagName) {
         mapStr = `~~${childrenRender()}~~`
+    } else if ('html' === tagName || 'body' === tagName) {
+        mapStr = childrenRender()
+    } else if ('head' === tagName) {
+        mapStr = '';
     } else {
         mapStr = dom.clone().wrap('<container />').parent().html();//+'\r\n'
     }
@@ -165,4 +169,7 @@ module.exports = {
                 return convertMiddleware($, log)
             })
     }
+
 }
+
+
