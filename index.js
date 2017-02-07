@@ -48,7 +48,10 @@ if (options.eval) {
         var urlObj = require('url').parse(path_url); // slashes
         ( urlObj.slashes ? html2mdFromURL(path_url, options.selector, false) : html2mdFromPath(path_url, options.selector, false) )
         .then(console.log)
-        .catch(console.error)
+        .catch(function (err) {
+            console.error(err);
+            process.exit(1);
+        })
     })
 }
 
