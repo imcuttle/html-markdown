@@ -1,14 +1,18 @@
 /**
  * Created by moyu on 2017/2/7.
  */
-
-var jsdom = require('jsdom').jsdom;
-var isHtml = require('./utils').isHtml;
+var isBrowser = (() => !(typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node !== 'undefined'))();
+var jsdom = !isBrowser ? require('jsdom').jsdom : function (html) {
+        var container = document.createElement('html');
+        container.innerHTML = html;
+        return container;
+    };
+// var isHtml = require('./utils').isHtml;
 
 // var __load__ = cheerio.load;
 
 console.part = function (s) {
-    process.stdout.write(s);
+    !isBrowser && process.stdout.write(s);
 }
 /*var __text__ = cheerio.prototype.text*/
 var jsdomText = function (dom) {
@@ -34,8 +38,13 @@ function elems2Markdown(domlist, parentTagName, inner, level, log) {
     parentTagName = parentTagName.toLowerCase();
     var markdown = "";
     domlist.forEach(function (dom, index) {
-        var part = dom.nodeType === 3 ? dom.nodeValue : elem2Markdown(dom, parentTagName, index, inner, level);
-        !inner && log && console.part(part);
+        var part;
+        if (dom.nodeType === 8) { // comment
+            part = '';
+        } else {
+            var part = dom.nodeType === 3 ? dom.nodeValue : elem2Markdown(dom, parentTagName, index, inner, level);
+            !inner && log && console.part(part);
+        }
         markdown += part;
     })
     return markdown;
@@ -161,3 +170,5 @@ module.exports = {
             })
     }
 }
+
+// module.exports.html2mdFromString("<h1>sdsd</h1><!--more-->", true)
