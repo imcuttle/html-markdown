@@ -3,7 +3,6 @@
  */
 
 var cheerio = require('cheerio');
-var fs = require('fs');
 var isHtml = require('cheerio/lib/utils').isHtml;
 
 var __load__ = cheerio.load;
@@ -89,6 +88,7 @@ function elem2Markdown(dom, parentTagName, index, inner, level) {
 }
 
 function fs_isDir(path) {
+    var fs = require('fs');
     var stat = fs.statSync(path);
     return !!stat && stat.isDirectory();
 }
@@ -140,6 +140,7 @@ module.exports = {
     },
 
     html2mdFromPath: function (path, selector, log) {
+        var fs = require('fs');
         var basename = require('path').basename(path);
         if (!fs.existsSync(path)) {
             return Promise.reject("not exists file: " + basename+'.');

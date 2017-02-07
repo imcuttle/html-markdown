@@ -2,6 +2,10 @@
 
 Convert from Html to Markdown By nodeJs.
 
+Requirements: [Cheerio](https://github.com/cheeriojs/cheerio)
+Cheerio is isomorphic HTML parser using like jquery for server.
+So we can `html-markdown` browser and server(nodejs), that is to say, it's **isomorphic**.
+
 - Bash
 
 ```bash
