@@ -26,6 +26,7 @@ html2md path/to/html/file -s "#markdown"
 html2md --eval "<h1>Hello!</h1>"
 
 html2md - # get string from stdin
+html2md   # get string from stdin, better REPL
 
 {
     echo "<h1>HEAD1</h1>";

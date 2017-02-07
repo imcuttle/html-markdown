@@ -1,6 +1,6 @@
 {
   "name": "html-markdown",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Convert from Html to Markdown isomorphically By Javascript.",
   "main": "lib.js",
   "dependencies": {

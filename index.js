@@ -31,11 +31,6 @@ if (options.version) {
     return;
 }
 
-if (options._.length === 0 && !options.eval) {
-    console.error("Usage: html2md [-e html] [-s dom selector of url] url/path");
-    return;
-}
-
 var html2mdFromString = require('./lib').html2mdFromString
 var html2mdFromURL = require('./lib').html2mdFromURL
 var html2mdFromPath = require('./lib').html2mdFromPath
@@ -52,7 +47,16 @@ if (options.eval) {
     rl.on('line', function (line) {
         console.log(html2mdFromString(line, false));
     })
-
+} else if (options._.length === 0) {
+    var readline = require('readline');
+    var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        terminal: true
+    });
+    rl.on('line', function (line) {
+        console.log(html2mdFromString(line, false));
+    })
 } else {
     options._.forEach(function (path_url) {
         var urlObj = require('url').parse(path_url); // slashes
