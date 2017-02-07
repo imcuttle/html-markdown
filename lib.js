@@ -89,6 +89,8 @@ function elem2Markdown(dom, parentTagName, index, inner, level) {
         mapStr = childrenRender()
     } else if ('head' === tagName) {
         mapStr = '';
+    } else if ('br' === tagName) {
+        mapStr = '  \n';
     } else {
         mapStr = dom.clone().wrap('<container />').parent().html();//+'\r\n'
     }
