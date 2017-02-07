@@ -42,7 +42,17 @@ var html2mdFromURL = require('./lib').html2mdFromURL
 var html2mdFromPath = require('./lib').html2mdFromPath
 
 if (options.eval) {
-    html2mdFromString(options.eval, true);
+    console.log(html2mdFromString(options.eval, false));
+} else if (options._.includes("-")) { // stdin
+    var readline = require('readline');
+    var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        terminal: false // ctrl char not work
+    });
+    rl.on('line', function (line) {
+        console.log(html2mdFromString(line, false));
+    })
 } else {
     options._.forEach(function (path_url) {
         var urlObj = require('url').parse(path_url); // slashes
