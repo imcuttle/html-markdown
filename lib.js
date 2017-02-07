@@ -158,24 +158,23 @@ module.exports = {
             return Promise.reject(basename + " is a directory.");
         }
 
-        fs.readFile(path, function (err, data) {
-            if (err) {
-                return Promise.reject(err.message);
-            }
-            var string = data.toString();
-            if (!isHtml(string)) {
-                return Promise.reject(basename + " is not a html file.");
-            }
-            return Promise.resolve(jsdom(string))
-                .then(function (dom) {
-                    return selectorMiddleware(dom, selector)
-                }).then(function (dom) {
-                    return convertMiddleware(dom, log)
-                })
+        return new Promise(function (resolve, reject) {
+            fs.readFile(path, function (err, data) {
+                if (err) {
+                    reject(err.message);
+                    return;
+                }
+                var string = data.toString();
+                if (!isHtml(string)) {
+                    reject(basename + " is not a html file.");
+                    return;
+                }
+                resolve(jsdom(string))
+            })
+        }).then(function (dom) {
+            return selectorMiddleware(dom, selector)
+        }).then(function (dom) {
+            return convertMiddleware(dom, log)
         })
     }
 }
-
-module.exports.html2mdFromString("<h1>sdsd</h1><!--more-->", true)
-module.exports.html2mdFromURL("", )
-module.exports.html2mdFromString("<h1>sdsd</h1><!--more-->", true)

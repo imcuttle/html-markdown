@@ -11,7 +11,6 @@ var html2mdFromURL = require('./lib').html2mdFromURL
 var html2mdFromPath = require('./lib').html2mdFromPath
 
 
-
 var default_opts = {
     selector: argv.s || argv.selector,
     eval: argv.e || argv.eval,

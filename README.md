@@ -1,13 +1,15 @@
 # html-markdown
 
-Convert from Html to Markdown By nodeJs.
+Convert from Html to Markdown isomorphically By Javascript.
 
-Branches: master => cheerio;  jsdom => jsdom (isomorphic);
+Branches: master => jsdom (isomorphic);  cheerio => cheerio;
 
 Requirements: [Cheerio](https://github.com/cheeriojs/cheerio) Or [jsDom](https://github.com/tmpvar/jsdom)
 Cheerio is HTML parser using like jquery for server.
 jsDom is has better performance on browser, don't need import jsdom.
 So we can `html-markdown` browser and server(nodejs), that is to say, it's **isomorphic**.
+
+**jsdom version in npm.**
 
 - Bash
 
@@ -24,7 +26,7 @@ html2md path/to/html/file -s "#markdown"
 html2md --eval "<h1>Hello!</h1>"
 ```
 
-- Script
+- Package
 
 ```
 npm i --save html-markdown
@@ -34,8 +36,10 @@ npm i --save html-markdown
 var html2md = require('html-markdown');
 
 var md1 = html2md.html2mdFromString("<h1>Hello!</h1>");
-// https or http
+
+// https or http, not isomorphic
 html2md.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme").then(console.log);
 
+// not isomorphic
 html2md.html2mdFromPath("path/to/html/file", "#markdown").then(console.log);
 ```
