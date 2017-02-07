@@ -2,24 +2,20 @@
  * Created by moyu on 2017/2/7.
  */
 
-var cheerio = require('cheerio');
-var isHtml = require('cheerio/lib/utils').isHtml;
+var jsdom = require('jsdom').jsdom;
+var isHtml = require('./utils').isHtml;
 
-var __load__ = cheerio.load;
-cheerio.load = function () {
-    arguments[0] = `<cheerio id="cheerio">${arguments[0]}</cheerio>`
-    var $ = __load__.apply(this, Array.from(arguments));
-    return $('cheerio#cheerio');
-}
+// var __load__ = cheerio.load;
+
 console.part = function (s) {
     process.stdout.write(s);
 }
-var __text__ = cheerio.prototype.text
-cheerio.prototype.text = function () {
+/*var __text__ = cheerio.prototype.text*/
+var jsdomText = function (dom) {
     var he = require('he'); // he for decoding html entities
-    var html = this.html();
+    var html = dom.innerHTML;
     if(!html) {
-        return __text__.call(this);
+        return dom.textContent;
     }
 
     var myhtml = html.replace(/<p.*?>(.*?)<\/p>/gmi, '$1\n')
@@ -37,8 +33,8 @@ function elems2Markdown(domlist, parentTagName, inner, level, log) {
     parentTagName = parentTagName || ""
     parentTagName = parentTagName.toLowerCase();
     var markdown = "";
-    domlist.each(function (index, dom) {
-        var part = dom.type === 'text' ? cheerio(dom).text() : elem2Markdown(cheerio(dom), parentTagName, index, inner, level);
+    domlist.forEach(function (dom, index) {
+        var part = dom.nodeType === 3 ? dom.nodeValue : elem2Markdown(dom, parentTagName, index, inner, level);
         !inner && log && console.part(part);
         markdown += part;
     })
@@ -49,11 +45,12 @@ function elem2Markdown(dom, parentTagName, index, inner, level) {
     inner = inner || false;
     level = level || 0;
     index = index || 0;
-    var tagName = dom.prop('tagName') || '';
+
+    var tagName = dom.tagName || '';
     tagName = tagName.toLowerCase();
-    var mapStr, children = dom.contents(), existChild = children.length > 0;
+    var mapStr, children = dom.childNodes, existChild = children.length > 0;
     var childrenRender = function (level) {
-        return existChild ? elems2Markdown.call(null, children, tagName, true, level) : dom.text.call(dom);
+        return existChild ? elems2Markdown.call(null, children, tagName, true, level) : dom.textContent;
     }
     if (/^h([\d]+)$/i.test(tagName)) {
         mapStr = `${'#'.repeat(+RegExp.$1)} ${childrenRender()}`;
@@ -62,15 +59,15 @@ function elem2Markdown(dom, parentTagName, index, inner, level) {
     } else if ('li' === tagName) {
         mapStr = `${'   '.repeat(level)}${parentTagName === 'ul' ? '-' : 1+index+'.'} ${childrenRender()}`
     } else if ('img' === tagName) {
-        mapStr = `![${dom.attr('alt') || ''}](${dom.attr('src')})`
+        mapStr = `![${dom.getAttribute('alt') || ''}](${dom.getAttribute('src')})`
     } else if ('p' === tagName) {
         mapStr = `${childrenRender()}  `
     } else if ('code' === tagName) {
         mapStr = "`" + childrenRender() + "`"
     } else if ('pre' === tagName) {
-        mapStr = "\n```\n"+ `${dom.text().replace(/^\r?\n/, '').replace(/\r?\n$/, '')}\n` +"```\n"
+        mapStr = "\n```\n"+ `${jsdomText(dom).replace(/^\r?\n/, '').replace(/\r?\n$/, '')}\n` +"```\n"
     } else if ('a' === tagName) {
-        mapStr = `[${childrenRender()}](${dom.attr('href')})`;
+        mapStr = `[${childrenRender()}](${dom.getAttribute('href')})`;
     } else if ('div' === tagName) {
         mapStr = `${childrenRender()}`
     } else if ('strong' === tagName) {
@@ -81,8 +78,12 @@ function elem2Markdown(dom, parentTagName, index, inner, level) {
         mapStr = `------`
     } else if ('del' === tagName) {
         mapStr = `~~${childrenRender()}~~`
+    } else if ('html' === tagName || 'body' === tagName) {
+        mapStr = childrenRender()
+    } else if ('head' === tagName) {
+        mapStr = '';
     } else {
-        mapStr = dom.clone().wrap('<container />').parent().html();//+'\r\n'
+        mapStr = dom.outerHTML;//+'\r\n'
     }
     return mapStr; // inner && 'li' !== tagName ? mapStr.replace(/\r\n/g, '')+'\r\n' : mapStr;
 }
@@ -93,20 +94,20 @@ function fs_isDir(path) {
     return !!stat && stat.isDirectory();
 }
 
-function selectorMiddleware($, selector) {
-    return selector ? $.find(selector) : $;
+function selectorMiddleware(dom, selector) {
+    return selector ? dom.querySelector(selector) : dom;
 }
 
-function convertMiddleware($, log) {
-    var tmp = elems2Markdown($.contents(), $.prop('tagName'), undefined, undefined, log)+'\n';
+function convertMiddleware(doc, log) {
+    var tmp = elems2Markdown(doc.childNodes, doc.tagName || "document", undefined, undefined, log)+'\n';
     log && console.part('\n');
     return tmp.trim();
 }
 
 module.exports = {
     html2mdFromString: function (string, log) {
-        var $ = cheerio.load(string);
-        return convertMiddleware($, log)
+        var doc = jsdom(string);
+        return convertMiddleware(doc, log)
     },
     html2mdFromURL: function (url, selector, log) {
         var urlObj = require('url').parse(url);
@@ -128,14 +129,13 @@ module.exports = {
                 res.on('data', function (string) {
                     html += string;
                 }).on('end', function () {
-                    var cheerio = require('cheerio');
-                    resolve(cheerio.load(html));
+                    resolve(jsdom(html));
                 })
             })
-        } ).then(function ($) {
-            return selectorMiddleware($, selector)
-        }).then(function ($) {
-            return convertMiddleware($, log)
+        } ).then(function (dom) {
+            return selectorMiddleware(dom, selector)
+        }).then(function (dom) {
+            return convertMiddleware(dom, log)
         })
     },
 
@@ -153,14 +153,11 @@ module.exports = {
         if (!isHtml(string)) {
             return Promise.reject(basename + " is not a html file.");
         }
-        return Promise.resolve(cheerio.load(string))
-            .then(function ($) {
-                return selectorMiddleware($, selector)
-            }).then(function ($) {
-                return convertMiddleware($, log)
+        return Promise.resolve(jsdom(string))
+            .then(function (dom) {
+                return selectorMiddleware(dom, selector)
+            }).then(function (dom) {
+                return convertMiddleware(dom, log)
             })
     }
-
 }
-
-
