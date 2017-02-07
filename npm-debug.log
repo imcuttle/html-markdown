@@ -1,0 +1,112 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/Cellar/node/7.2.1/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'publish' ]
+2 info using npm@3.10.9
+3 info using node@v7.2.1
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Users/moyu/my-code/NodeCode/html2md',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/moyu/.npm/html-markdown/1.0.6/package.tgz not in flight; packing
+9 verbose correctMkdir /Users/moyu/.npm correctMkdir not in flight; initializing
+10 info lifecycle html-markdown@1.0.6~prepublish: html-markdown@1.0.6
+11 silly lifecycle html-markdown@1.0.6~prepublish: no script for prepublish, continuing
+12 verbose tar pack [ '/Users/moyu/.npm/html-markdown/1.0.6/package.tgz',
+12 verbose tar pack   '/Users/moyu/my-code/NodeCode/html2md' ]
+13 verbose tarball /Users/moyu/.npm/html-markdown/1.0.6/package.tgz
+14 verbose folder /Users/moyu/my-code/NodeCode/html2md
+15 verbose addLocalTarball adding from inside cache /Users/moyu/.npm/html-markdown/1.0.6/package.tgz
+16 verbose correctMkdir /Users/moyu/.npm correctMkdir not in flight; initializing
+17 silly cache afterAdd html-markdown@1.0.6
+18 verbose afterAdd /Users/moyu/.npm/html-markdown/1.0.6/package/package.json not in flight; writing
+19 verbose correctMkdir /Users/moyu/.npm correctMkdir not in flight; initializing
+20 verbose afterAdd /Users/moyu/.npm/html-markdown/1.0.6/package/package.json written
+21 silly publish { name: 'html-markdown',
+21 silly publish   version: '1.0.6',
+21 silly publish   description: 'Convert from Html to Markdown isomorphically.',
+21 silly publish   main: 'lib.js',
+21 silly publish   dependencies: { he: '^1.1.1', jsdom: '^9.10.0', minimist: '^1.2.0' },
+21 silly publish   bin: { html2md: 'index.js' },
+21 silly publish   devDependencies: {},
+21 silly publish   scripts: { test: 'echo "Error: no test specified" && exit 1' },
+21 silly publish   author: { name: 'moyu' },
+21 silly publish   license: 'ISC',
+21 silly publish   repository:
+21 silly publish    { type: 'git',
+21 silly publish      url: 'git+https://github.com/moyuyc/html-markdown.git' },
+21 silly publish   keywords: [ 'html', 'markdown' ],
+21 silly publish   bugs: { url: 'https://github.com/moyuyc/html-markdown/issues' },
+21 silly publish   homepage: 'https://github.com/moyuyc/html-markdown#readme',
+21 silly publish   readme: '# html-markdown\n\nConvert from Html to Markdown isomorphically By Javascript.\n\nBranches: master => jsdom (isomorphic);  cheerio => cheerio;\n\nRequirements: [Cheerio](https://github.com/cheeriojs/cheerio) Or [jsDom](https://github.com/tmpvar/jsdom)\nCheerio is HTML parser using like jquery for server.\njsDom is has better performance on browser, don\'t need import jsdom.\nSo we can `html-markdown` browser and server(nodejs), that is to say, it\'s **isomorphic**.\n\n**jsdom version in npm.**\n\n- Bash\n\n```bash\nnpm i -g html-markdown\nhtml2md -h\nhtml2md https://www.npmjs.com/package/html-markdown -s "#readme" > html-markdown-readme.md\n# with image\nhtml2md https://www.npmjs.com/package/song-robot -s "#readme" > song-robot-readme.md\nhtml2md https://www.npmjs.com/package/moka-cli -s "#readme" > moka-cli-readme.md\n\nhtml2md path/to/html/file -s "#markdown"\n\nhtml2md --eval "<h1>Hello!</h1>"\n```\n\n- Package\n\n```\nnpm i --save html-markdown\n```\n\n```javascript\nvar html2md = require(\'html-markdown\');\n\nvar md1 = html2md.html2mdFromString("<h1>Hello!</h1>");\n\n// https or http, not isomorphic\nhtml2md.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme").then(console.log);\n\n// not isomorphic\nhtml2md.html2mdFromPath("path/to/html/file", "#markdown").then(console.log);\n```',
+21 silly publish   readmeFilename: 'README.md',
+21 silly publish   gitHead: 'a16ef66da38b8cd95fad2be3a4c8795c12ee527b',
+21 silly publish   _id: 'html-markdown@1.0.6',
+21 silly publish   _shasum: '366f5c5f000fa86e8cc3129ef546e12120b883fd',
+21 silly publish   _from: '.' }
+22 verbose getPublishConfig undefined
+23 silly mapToRegistry name html-markdown
+24 silly mapToRegistry using default registry
+25 silly mapToRegistry registry https://registry.npmjs.org/
+26 silly mapToRegistry data Result {
+26 silly mapToRegistry   raw: 'html-markdown',
+26 silly mapToRegistry   scope: null,
+26 silly mapToRegistry   escapedName: 'html-markdown',
+26 silly mapToRegistry   name: 'html-markdown',
+26 silly mapToRegistry   rawSpec: '',
+26 silly mapToRegistry   spec: 'latest',
+26 silly mapToRegistry   type: 'tag' }
+27 silly mapToRegistry uri https://registry.npmjs.org/html-markdown
+28 verbose publish registryBase https://registry.npmjs.org/
+29 silly publish uploading /Users/moyu/.npm/html-markdown/1.0.6/package.tgz
+30 verbose request uri https://registry.npmjs.org/html-markdown
+31 verbose request sending authorization for write operation
+32 info attempt registry request try #1 at 14:39:28
+33 verbose request using bearer token for auth
+34 verbose request id 9567fbed6c28fefa
+35 http request PUT https://registry.npmjs.org/html-markdown
+36 http 403 https://registry.npmjs.org/html-markdown
+37 verbose headers { 'content-type': 'application/json',
+37 verbose headers   'cache-control': 'max-age=300',
+37 verbose headers   'content-length': '95',
+37 verbose headers   'accept-ranges': 'bytes',
+37 verbose headers   date: 'Tue, 07 Feb 2017 06:39:31 GMT',
+37 verbose headers   via: '1.1 varnish',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'x-served-by': 'cache-nrt6124-NRT',
+37 verbose headers   'x-cache': 'MISS',
+37 verbose headers   'x-cache-hits': '0',
+37 verbose headers   'x-timer': 'S1486449570.931431,VS0,VE612',
+37 verbose headers   vary: 'Accept-Encoding' }
+38 verbose request invalidating /Users/moyu/.npm/registry.npmjs.org/html-markdown on PUT
+39 error publish Failed PUT 403
+40 verbose stack Error: "You cannot publish over the previously published version 1.0.6." : html-markdown
+40 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+40 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+40 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+40 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:187:22)
+40 verbose stack     at emitTwo (events.js:106:13)
+40 verbose stack     at Request.emit (events.js:191:7)
+40 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1048:10)
+40 verbose stack     at emitOne (events.js:96:13)
+40 verbose stack     at Request.emit (events.js:188:7)
+40 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:969:12)
+41 verbose statusCode 403
+42 verbose pkgid html-markdown
+43 verbose cwd /Users/moyu/my-code/NodeCode/html2md
+44 error Darwin 16.0.0
+45 error argv "/usr/local/Cellar/node/7.2.1/bin/node" "/usr/local/bin/npm" "publish"
+46 error node v7.2.1
+47 error npm  v3.10.9
+48 error code E403
+49 error "You cannot publish over the previously published version 1.0.6." : html-markdown
+50 error If you need help, you may report this error at:
+50 error     <https://github.com/npm/npm/issues>
+51 verbose exit [ 1, true ]
