@@ -24,6 +24,13 @@ html2md https://www.npmjs.com/package/moka-cli -s "#readme" > moka-cli-readme.md
 html2md path/to/html/file -s "#markdown"
 
 html2md --eval "<h1>Hello!</h1>"
+
+html2md - # get string from stdin
+
+{
+    echo "<h1>HEAD1</h1>";
+    echo "<h2>HEAD2</h2>";
+} | html2md -
 ```
 
 - Package
