@@ -5,11 +5,11 @@ Convert from Html to Markdown isomorphically By Javascript.
 Branches: master => cheerio;  jsdom => jsdom (isomorphic);
 
 Requirements: [Cheerio](https://github.com/cheeriojs/cheerio) Or [jsDom](https://github.com/tmpvar/jsdom)
-Cheerio is HTML parser using like jquery for server.
+Cheerio is Fast HTML parser using like jquery for server.
 jsDom is has better performance on browser, don't need import jsdom.
 So we can `html-markdown` browser and server(nodejs), that is to say, it's **isomorphic**.
 
-**jsdom version in npm.**
+**cheerio version in npm. (Fast)**
 
 - Bash
 
