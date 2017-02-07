@@ -38,8 +38,13 @@ function elems2Markdown(domlist, parentTagName, inner, level, log) {
     parentTagName = parentTagName.toLowerCase();
     var markdown = "";
     domlist.each(function (index, dom) {
-        var part = dom.type === 'text' ? cheerio(dom).text() : elem2Markdown(cheerio(dom), parentTagName, index, inner, level);
-        !inner && log && console.part(part);
+        var part;
+        if (dom.type === 'comment') {
+            part = '';
+        } else {
+            part = dom.type === 'text' ? cheerio(dom).text() : elem2Markdown(cheerio(dom), parentTagName, index, inner, level);
+            !inner && log && console.part(part);
+        }
         markdown += part;
     })
     return markdown;
@@ -160,7 +165,4 @@ module.exports = {
                 return convertMiddleware($, log)
             })
     }
-
 }
-
-
