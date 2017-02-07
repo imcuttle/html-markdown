@@ -158,22 +158,28 @@ module.exports = {
             return Promise.reject(basename + " is a directory.");
         }
 
-        fs.readFile(path, function (err, data) {
-            if (err) {
-                return Promise.reject(err.message);
-            }
-            var string = data.toString();
-            if (!isHtml(string)) {
-                return Promise.reject(basename + " is not a html file.");
-            }
-            return Promise.resolve(cheerio.load(string))
-                .then(function ($) {
-                    return selectorMiddleware($, selector)
-                }).then(function ($) {
-                    return convertMiddleware($, log)
-                })
+        return new Promise(function (resolve, reject) {
+            fs.readFile(path, function (err, data) {
+                if (err) {
+                    reject(err.message);
+                    return;
+                }
+                var string = data.toString();
+                if (!isHtml(string)) {
+                    reject(basename + " is not a html file.");
+                    return;
+                }
+                resolve(cheerio.load(string))
+            })
+        }).then(function ($) {
+            return selectorMiddleware($, selector)
+        }).then(function ($) {
+            return convertMiddleware($, log)
         })
     }
 }
 
 
+// module.exports.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme").then(console.log)
+// module.exports.html2mdFromPath("./test.html", "#readme").then(console.log)
+// module.exports.html2mdFromString("<h1>是多少</h1>", true)
