@@ -1,6 +1,6 @@
 # html-markdown
 
-Convert from Html to Markdown By nodeJs.
+Convert from Html to Markdown isomorphically By Javascript.
 
 Branches: master => cheerio;  jsdom => jsdom (isomorphic);
 
