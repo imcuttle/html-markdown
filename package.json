@@ -1,6 +1,6 @@
 {
   "name": "html-markdown",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Convert from Html to Markdown By nodeJs.",
   "main": "lib.js",
   "dependencies": {
