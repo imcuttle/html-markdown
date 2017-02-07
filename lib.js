@@ -7,7 +7,7 @@ var jsdom = !isBrowser ? require('jsdom').jsdom : function (html) {
         container.innerHTML = html;
         return container;
     };
-// var isHtml = require('./utils').isHtml;
+var isHtml = require('./utils').isHtml;
 
 // var __load__ = cheerio.load;
 
@@ -158,17 +158,24 @@ module.exports = {
             return Promise.reject(basename + " is a directory.");
         }
 
-        var string = fs.readFileSync(path).toString();
-        if (!isHtml(string)) {
-            return Promise.reject(basename + " is not a html file.");
-        }
-        return Promise.resolve(jsdom(string))
-            .then(function (dom) {
-                return selectorMiddleware(dom, selector)
-            }).then(function (dom) {
-                return convertMiddleware(dom, log)
-            })
+        fs.readFile(path, function (err, data) {
+            if (err) {
+                return Promise.reject(err.message);
+            }
+            var string = data.toString();
+            if (!isHtml(string)) {
+                return Promise.reject(basename + " is not a html file.");
+            }
+            return Promise.resolve(jsdom(string))
+                .then(function (dom) {
+                    return selectorMiddleware(dom, selector)
+                }).then(function (dom) {
+                    return convertMiddleware(dom, log)
+                })
+        })
     }
 }
 
-// module.exports.html2mdFromString("<h1>sdsd</h1><!--more-->", true)
+module.exports.html2mdFromString("<h1>sdsd</h1><!--more-->", true)
+module.exports.html2mdFromURL("", )
+module.exports.html2mdFromString("<h1>sdsd</h1><!--more-->", true)
