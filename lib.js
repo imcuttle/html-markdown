@@ -3,7 +3,7 @@
  */
 
 var cheerio = require('cheerio');
-var isHtml = require('cheerio/lib/utils').isHtml;
+var isHtml = require('./utils').isHtml;
 
 var __load__ = cheerio.load;
 cheerio.load = function () {
