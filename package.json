@@ -4,7 +4,6 @@
   "description": "Convert from Html to Markdown By nodeJs.",
   "main": "lib.js",
   "dependencies": {
-    "cheerio": "^0.22.0",
     "he": "^1.1.1",
     "jsdom": "^9.10.0",
     "minimist": "^1.2.0"
