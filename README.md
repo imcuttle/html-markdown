@@ -9,6 +9,8 @@ Cheerio is HTML parser using like jquery for server.
 jsDom is has better performance on browser, don't need import jsdom.
 So we can `html-markdown` browser and server(nodejs), that is to say, it's **isomorphic**.
 
+**jsdom version in npm.**
+
 - Bash
 
 ```bash
