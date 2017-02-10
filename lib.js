@@ -11,7 +11,7 @@ var __load__ = cheerio.load;
 cheerio.load = function (html) {
     arguments[0] = `<cheerio id="cheerio">${arguments[0]}</cheerio>`
     var $ = __load__(html, {
-        decodeEntities: false
+        decodeEntities: true
     });
     return $('cheerio#cheerio');
 }
@@ -28,7 +28,6 @@ cheerio.prototype.text = function () {
         .replace(/<div.*?>(.*?)<\/div>/gmi, '$1\n')
         .replace(/<br.*?>/gmi, '\n')
         .replace(/<(?:.)*?>/gm, '') // remove all html tags
-
     var mytext = he.decode(myhtml)
     return mytext;
 }
@@ -131,11 +130,11 @@ function fs_isDir(path) {
 }
 
 function selectorMiddleware($, selector) {
-    return selector ? $.find(selector) : $;
+    return selector ? $.find(selector) : $.find('*').eq(0);
 }
 
 function convertMiddleware($, log, baseUrl) {
-    var tmp = elems2Markdown($.contents(), $.prop('tagName'), undefined, undefined, log, baseUrl)+'\n';
+    var tmp = elems2Markdown($.contents(), $.prop('tagName') , undefined, undefined, log, baseUrl)+'\n';
     log && console.part('\n');
     return tmp.trim();
 }
