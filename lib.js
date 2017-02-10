@@ -64,15 +64,15 @@ function elem2Markdown(dom, parentTagName, index, log, inner, level, baseUrl, he
         return existChild ? elems2Markdown.call(null, children, tagName, true, level, log, baseUrl, head) : dom.text.call(dom);
     }
     if (/^h([\d]+)$/i.test(tagName)) {
-        mapStr += `${head}${'#'.repeat(+RegExp.$1)} ${childrenRender()}`;
+        mapStr += `\n${head}${'#'.repeat(+RegExp.$1)} ${childrenRender()}\n`;
     } else if ('ul' === tagName || 'ol' === tagName) {
-        mapStr += `${childrenRender(level+(parentTagName === 'li'? 1 : 0))}`
+        mapStr += `\n${childrenRender(level+(parentTagName === 'li'? 1 : 0))}\n`
     } else if ('li' === tagName) {
         mapStr += `${head}${'   '.repeat(level)}${parentTagName === 'ul' ? '-' : 1+index+'.'} ${childrenRender()}`
     } else if ('img' === tagName) {
-        mapStr += `![${dom.attr('alt') || ''}](${dom.attr('src') ? convertURL(baseUrl, dom.attr('src')).replace(/\)/g, '\\)') : ''})`
+        mapStr += `![${dom.attr('alt') || ''}](${dom.attr('src') ? convertURL(baseUrl, dom.attr('src')).replace(/\)/g, '\\)') : ''})\n`
     } else if ('p' === tagName) {
-        mapStr += `${head}${childrenRender()}  `
+        mapStr += `${head}${childrenRender()}  \n\n`
     } else if ('code' === tagName) {
         mapStr += "`" + childrenRender() + "`"
     } else if ('pre' === tagName) {
