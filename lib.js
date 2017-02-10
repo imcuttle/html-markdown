@@ -3,33 +3,37 @@
  */
 var isBrowser = (() => !(typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node !== 'undefined'))();
 var cheerio = require('cheerio');
+var url = require('url');
 var isHtml = require('./utils').isHtml;
+var he = require('he');
 
 var __load__ = cheerio.load;
-cheerio.load = function () {
+cheerio.load = function (html) {
     arguments[0] = `<cheerio id="cheerio">${arguments[0]}</cheerio>`
-    var $ = __load__.apply(this, Array.from(arguments));
+    var $ = __load__(html, {
+        decodeEntities: false
+    });
     return $('cheerio#cheerio');
 }
 console.part = isBrowser ? function() {} : function (s) {process.stdout.write(s)};
 
 var __text__ = cheerio.prototype.text
 cheerio.prototype.text = function () {
-    var he = require('he'); // he for decoding html entities
     var html = this.html();
     if(!html) {
-        return __text__.call(this);
+        return he.decode(__text__.call(this));
     }
 
     var myhtml = html.replace(/<p.*?>(.*?)<\/p>/gmi, '$1\n')
         .replace(/<div.*?>(.*?)<\/div>/gmi, '$1\n')
         .replace(/<br.*?>/gmi, '\n')
         .replace(/<(?:.)*?>/gm, '') // remove all html tags
+
     var mytext = he.decode(myhtml)
     return mytext;
 }
 
-function elems2Markdown(domlist, parentTagName, inner, level, log) {
+function elems2Markdown(domlist, parentTagName, inner, level, log, baseUrl, head) {
     inner = inner || false;
     level = level || 0;
     log = log || false;
@@ -41,7 +45,7 @@ function elems2Markdown(domlist, parentTagName, inner, level, log) {
         if (dom.type === 'comment') {
             part = '';
         } else {
-            part = dom.type === 'text' ? cheerio(dom).text() : elem2Markdown(cheerio(dom), parentTagName, index, inner, level);
+            part = dom.type === 'text' ? cheerio(dom).text() : elem2Markdown(cheerio(dom), parentTagName, index, log, inner, level, baseUrl, head);
             !inner && log && console.part(part);
         }
         markdown += part;
@@ -49,52 +53,75 @@ function elems2Markdown(domlist, parentTagName, inner, level, log) {
     return markdown;
 }
 
-function elem2Markdown(dom, parentTagName, index, inner, level) {
+function elem2Markdown(dom, parentTagName, index, log, inner, level, baseUrl, head) {
     inner = inner || false;
     level = level || 0;
     index = index || 0;
+    head = head || '';
     var tagName = dom.prop('tagName') || '';
     tagName = tagName.toLowerCase();
-    var mapStr, children = dom.contents(), existChild = children.length > 0;
-    var childrenRender = function (level) {
-        return existChild ? elems2Markdown.call(null, children, tagName, true, level) : dom.text.call(dom);
+    var mapStr='', children = dom.contents(), existChild = children.length > 0;
+    var childrenRender = function (level, head) {
+        return existChild ? elems2Markdown.call(null, children, tagName, true, level, log, baseUrl, head) : dom.text.call(dom);
     }
     if (/^h([\d]+)$/i.test(tagName)) {
-        mapStr = `${'#'.repeat(+RegExp.$1)} ${childrenRender()}`;
+        mapStr += `${head}${'#'.repeat(+RegExp.$1)} ${childrenRender()}`;
     } else if ('ul' === tagName || 'ol' === tagName) {
-        mapStr = `${childrenRender(level+(parentTagName === 'li'? 1 : 0))}`
+        mapStr += `${childrenRender(level+(parentTagName === 'li'? 1 : 0))}`
     } else if ('li' === tagName) {
-        mapStr = `${'   '.repeat(level)}${parentTagName === 'ul' ? '-' : 1+index+'.'} ${childrenRender()}`
+        mapStr += `${head}${'   '.repeat(level)}${parentTagName === 'ul' ? '-' : 1+index+'.'} ${childrenRender()}`
     } else if ('img' === tagName) {
-        mapStr = `![${dom.attr('alt') || ''}](${dom.attr('src')})`
+        mapStr += `![${dom.attr('alt') || ''}](${dom.attr('src') ? convertURL(baseUrl, dom.attr('src')).replace(/\)/g, '\\)') : ''})`
     } else if ('p' === tagName) {
-        mapStr = `${childrenRender()}  `
+        mapStr += `${head}${childrenRender()}  `
     } else if ('code' === tagName) {
-        mapStr = "`" + childrenRender() + "`"
+        mapStr += "`" + childrenRender() + "`"
     } else if ('pre' === tagName) {
         mapStr = "\n```\n"+ `${dom.text().replace(/^\r?\n/, '').replace(/\r?\n$/, '')}\n` +"```\n"
     } else if ('a' === tagName) {
-        mapStr = `[${childrenRender()}](${dom.attr('href')})`;
+        mapStr += `[${childrenRender()}](${dom.attr('href') ? convertURL(baseUrl, dom.attr('href')).replace(/\)/g, "\\)") : ''})`;
     } else if ('div' === tagName) {
-        mapStr = `${childrenRender()}`
+        mapStr += `${head}${childrenRender()}`
     } else if ('strong' === tagName) {
-        mapStr = `**${childrenRender()}**`
+        mapStr += `**${childrenRender()}**`
     } else if ('em' === tagName) {
-        mapStr = `*${childrenRender()}*`
+        mapStr += `*${childrenRender()}*`
     } else if ('hr' === tagName) {
-        mapStr = `------`
+        mapStr += `${head}------`
     } else if ('del' === tagName) {
-        mapStr = `~~${childrenRender()}~~`
+        mapStr += `~~${childrenRender()}~~`
     } else if ('html' === tagName || 'body' === tagName) {
-        mapStr = childrenRender()
+        mapStr += childrenRender()
     } else if ('head' === tagName) {
-        mapStr = '';
+        mapStr += '';
+    } else if ('blockquote' === tagName) {
+        mapStr += `\n${head}> ${childrenRender(level, '> ')}\n`;
     } else if ('br' === tagName) {
-        mapStr = '  \n';
+        mapStr += `${head}  \n`;
     } else {
-        mapStr = dom.clone().wrap('<container />').parent().html();//+'\r\n'
+        mapStr += he.decode(dom.clone().wrap('<container />').parent().html());//+'\r\n'
     }
     return mapStr; // inner && 'li' !== tagName ? mapStr.replace(/\r\n/g, '')+'\r\n' : mapStr;
+}
+/**
+ * Convert URL from any to absolute URL
+ * @param baseUrl
+ * @param href
+ * @return url: String
+ */
+function convertURL (baseUrl, href) {
+    // console.error(baseUrl, href);
+    if (!baseUrl || href.startsWith('#')) return href;
+    var opt = url.parse(baseUrl);
+    if (!opt.slashes) return href;
+    baseUrl = `${opt.protocol}//${opt.host}/`;
+
+    var hopt = url.parse(href);
+    if (hopt.slashes) return href;
+    if (href.startsWith('//')) return `${opt.protocol}${href}`;
+
+    href = href.startsWith('/') ? href.substr(1) : href;
+    return `${baseUrl}${href}`;
 }
 
 function fs_isDir(path) {
@@ -107,8 +134,8 @@ function selectorMiddleware($, selector) {
     return selector ? $.find(selector) : $;
 }
 
-function convertMiddleware($, log) {
-    var tmp = elems2Markdown($.contents(), $.prop('tagName'), undefined, undefined, log)+'\n';
+function convertMiddleware($, log, baseUrl) {
+    var tmp = elems2Markdown($.contents(), $.prop('tagName'), undefined, undefined, log, baseUrl)+'\n';
     log && console.part('\n');
     return tmp.trim();
 }
@@ -145,7 +172,7 @@ module.exports = {
         } ).then(function ($) {
             return selectorMiddleware($, selector)
         }).then(function ($) {
-            return convertMiddleware($, log)
+            return convertMiddleware($, log, url)
         })
     },
 
@@ -179,7 +206,6 @@ module.exports = {
         })
     }
 }
-
 
 // module.exports.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme").then(console.log)
 // module.exports.html2mdFromPath("./test.html", "#readme").then(console.log)
