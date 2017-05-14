@@ -81,12 +81,14 @@ function elem2Markdown(dom, parentTagName, index, log, inner, level, baseUrl, he
         mapStr += `[${childrenRender()}](${dom.attr('href') ? convertURL(baseUrl, dom.attr('href')).replace(/\)/g, "\\)") : ''})`;
     } else if ('div' === tagName) {
         mapStr += `${head}${childrenRender()}`
-    } else if ('strong' === tagName) {
+    } else if ('strong' === tagName || 'b' === tagName) {
         mapStr += `**${childrenRender()}**`
-    } else if ('em' === tagName) {
+    } else if ('em' === tagName || 'i' === tagName) {
         mapStr += `*${childrenRender()}*`
     } else if ('hr' === tagName) {
         mapStr += `${head}------`
+    } else if ('u' === tagName) {
+        mapStr += `__${childrenRender()}__`
     } else if ('del' === tagName) {
         mapStr += `~~${childrenRender()}~~`
     } else if ('html' === tagName || 'body' === tagName) {
