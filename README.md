@@ -51,3 +51,7 @@ html2md.html2mdFromURL("https://www.npmjs.com/package/song-robot", "#readme").th
 // not isomorphic
 html2md.html2mdFromPath("path/to/html/file", "#markdown").then(console.log);
 ```
+
+## Update
+
+- 1.0.17   [Issue 1](https://github.com/moyuyc/html-markdown/issues/1)
